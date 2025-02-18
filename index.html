@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Celular</title>
+    
+    <!-- jQuery e jQuery Mask Plugin -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+</head>
+<body>
+    <form id="phoneForm">
+        <label for="phone">Celular:</label>
+        <input type="text" id="phone" name="phone" placeholder="(00) 00000-0000" required>
+        <button type="submit">Enviar</button>
+    </form>
+    
+    <div id="response"></div>
+
+    <script>
+        $(document).ready(function() {
+            // Aplica a máscara do telefone
+            $('#phone').mask('(00) 00000-0000');
+
+            $('#phoneForm').submit(function(e) {
+                e.preventDefault();
+                
+                // Remove todos os caracteres não numéricos
+                let rawPhone = $('#phone').cleanVal();
+                
+                // Formata no padrão 55###########
+                let formattedPhone = '55' + rawPhone;
+                
+                // Faz a requisição POST
+                $.post({
+                    url: 'https://n8n-01.clubpetro.com/webhook/614b76e9-1d2d-4e9b-a4ff-bbcca2ea3d46',
+                    data: { cellPhone: formattedPhone },
+                    success: function(response) {
+                        // Exibe o token retornado
+                        $('#response').html('Token: ' + response.token);
+                    },
+                    error: function() {
+                        $('#response').html('Erro ao enviar os dados');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
